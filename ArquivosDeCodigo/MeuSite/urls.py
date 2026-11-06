@@ -30,14 +30,30 @@ urlpatterns = [
 
     path('ComoUsar/', views.ComoUsar, name='ComoUsar'), 
     
-    path('CriarConta/', views.CriacConta, name='CriarConta'), 
+    path('ConsentimentoDados/', views.ConsentimentoDados, name='ConsentimentoDados'),
+    path('CriarConta/', views.CriarConta, name='CriarConta'), 
     
     path('EdicaoUsuario/', views.EdicaoUsuario, name='EdicaoUsuario'), 
     
     path('EsqueciSenha/', views.EsqueciSenha, name='EsqueciSenha'), 
     
+    path('PreferenciasNotificacoes/', views.PreferenciasNotificacoes, name='PreferenciasNotificacoes'),
+    
     path('RemocaoUsuario/', views.RemocaoUsuario, name='RemocaoUsuario'), 
     
     path('Tela/', views.Tela, name='Tela'), 
+
+    path('HistoricoFamiliar/', views.HistoricoFamiliar, name='HistoricoFamiliar' ),
+
+    path('CheckupInteligente/', views.CheckupInteligente, name='CheckupInteligente'),
+   
+    path('ListarUsuarios/',views.ListarUsuarios, name='ListarUsuarios' ),
+
+    path('CalendarioCuidados/', views.CalendarioCuidados, name='CalendarioCuidados'),
+
+    path('RelatorioPreventivo/', views.RelatorioPreventivo, name='RelatorioPreventivo'),
+   
+    path('Familiares/', views.Familiares, name='Familiares'),
     
+    path('PerfilSaude/', views.PerfilSaude, name='PerfilSaude'),
 ]

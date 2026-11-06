@@ -1,0 +1,85 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f7fbf8;
+    color: #173d37;
+}
+
+/* Menu do topo */
+nav {
+    background-color: #0f675b;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav h2 {
+    margin: 0;
+    color: white;
+}
+
+.navegacao {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+/* Conteúdo no centro da página */
+main {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+h2, h3 {
+    color: #0f675b;
+}
+
+/* Caixa de cada usuário */
+.usuario {
+    background-color: white;
+    border: 1px solid #dbe7e2;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.usuario h3,
+.usuario p {
+    margin: 5px 0;
+}
+
+/* Botões de editar e remover */
+.botoes a {
+    background-color: #0f675b;
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+
+/* Link de cadastrar */
+.novo {
+    display: block;
+    margin-top: 30px;
+    text-align: center;
+    color: #0f675b;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+}

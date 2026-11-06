@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendário de cuidados - MedMap</title>
+    <link rel="stylesheet" href="{% static 'css/CalendarioCuidados.css' %}">
+</head>
+
+<body>
+
+    <nav>
+        <h1>MedMap</h1>
+
+        <div class="navegacao">
+            <a href="{% url 'home' %}">Página Inicial</a>
+            <a href="{% url 'ComoUsar' %}">Como usar</a>
+            <a href="{% url 'Artigos' %}">Artigos</a>
+            <a href="{% url 'Tela' %}">Sair</a>
+        </div>
+    </nav>
+
+    <main>
+        <h2>Calendário de cuidados</h2>
+        <p>Veja os seus próximos exames, consultas e vacinas.</p>
+
+        {% for cuidado in cuidados %}
+        <div class="cuidado">
+            <div>
+                <h3>{{ cuidado.nome }}</h3>
+                <p>{{ cuidado.tipo }} - {{ cuidado.data|date:"d/m/Y" }}</p>
+            </div>
+            {% if cuidado.data < hoje %}
+                <span class="feito">Feito</span>
+            {% else %}
+                <span class="pendente">Pendente</span>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p>Nenhum cuidado cadastrado.</p>
+        {% endfor %}
+    </main>
+
+    <footer>
+        <p>MedMap - Seu cuidado, do seu jeito.</p>
+    </footer>
+
+</body>
+</html>
