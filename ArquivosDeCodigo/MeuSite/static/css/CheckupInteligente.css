@@ -1,60 +1,91 @@
-* { box-sizing: border-box; }
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f7fbf8;
-    color: #173d37;
+nav{
+    background:#0f675b;
+    color:white;
+    padding:18px 6%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    min-height:90px;
+    box-shadow:0 4px 15px rgba(0,50,40,.12);
 }
-nav {
-    padding: 18px 30px;
-    background: #0f675b;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+
+nav h2{
+    margin:0;
+    font-size:30px;
+    letter-spacing:.5px;
 }
-nav h2 { margin: 0; color: white; }
-.navegacao { display: flex; gap: 20px; }
-.navegacao a { color: white; text-decoration: none; }
-.navegacao a:hover { text-decoration: underline; }
-main { max-width: 950px; margin: 35px auto; padding: 0 20px; }
-h1, h2 { color: #0f675b; }
-main > p { line-height: 1.5; }
-.aviso {
-    background: #e9f4ef;
-    border-left: 4px solid #0f675b;
-    border-radius: 5px;
-    padding: 16px;
-    margin: 25px 0;
-    line-height: 1.6;
+
+.navegacao{
+    display:flex;
+    align-items:center;
+    gap:35px;
 }
-.cuidados h2 { margin-bottom: 18px; }
-.lista {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
+
+.navegacao a{
+    color:white;
+    text-decoration:none;
+    font-size:18px;
+    transition:.2s;
 }
-.cartao {
-    background: white;
-    border: 1px solid #dbe7e2;
-    border-radius: 8px;
-    padding: 20px;
+
+.navegacao a:hover{
+    color:#d8efe8;
 }
-.cartao h3 { color: #0f675b; margin: 15px 0 8px; }
-.cartao p { line-height: 1.5; }
-.categoria {
-    display: inline-block;
-    padding: 5px 10px;
-    background: #e9f4ef;
-    border-radius: 15px;
-    font-size: 13px;
-    font-weight: bold;
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#f5faf8;
+    color:#1f3b36;
 }
-.situacao { color: #55736c; font-size: 14px; }
-.rodape-aviso { color: #55736c; font-size: 14px; }
-footer { text-align: center; padding: 20px; color: #55736c; }
-@media (max-width: 700px) {
-    nav { flex-direction: column; gap: 14px; }
-    .navegacao { flex-wrap: wrap; justify-content: center; }
-    .lista { grid-template-columns: 1fr; }
+
+main{
+    max-width:800px;
+    margin:40px auto;
+    padding:0 20px;
+}
+
+main h1, main h2{
+    color:#0f675b;
+}
+
+.habitos{
+    background:white;
+    border:1px solid #d8e6e2;
+    border-radius:8px;
+    padding:20px;
+}
+
+.habitos label{
+    display:block;
+    margin-bottom:10px;
+}
+
+.habitos button{
+    background:#0f675b;
+    color:white;
+    border:none;
+    border-radius:6px;
+    padding:10px 20px;
+    cursor:pointer;
+}
+
+.cartao{
+    background:white;
+    border:1px solid #d8e6e2;
+    border-left:5px solid #0f675b;
+    border-radius:8px;
+    padding:5px 20px;
+    margin-bottom:12px;
+}
+
+.rodape-aviso{
+    font-size:14px;
+    color:#555;
+}
+
+footer{
+    background:#0f675b;
+    color:white;
+    text-align:center;
+    padding:20px;
 }
