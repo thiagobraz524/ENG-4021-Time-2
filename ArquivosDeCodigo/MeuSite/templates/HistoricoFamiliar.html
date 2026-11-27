@@ -6,17 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Histórico familiar - MedMap</title>
     <link rel="stylesheet" href="{% static 'css/HistoricoFamiliar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/MedMap.css' %}">
 </head>
 
 <body>
 
-    <nav>
-        <h2>MedMap</h2>
-        <ul class="navegacao">
-            <li><a href="{% url 'InicioLogado' %}">Início</a></li>
-            <li><a href="{% url 'Familiares' %}">Familiares</a></li>
-       </ul>
-    </nav>
+    {% include 'includes/BarraLogado.html' %}
 
     <main>
 
@@ -28,6 +23,14 @@
                 Registre informações sobre doenças na sua família
                 para ajudar a acompanhar sua saúde preventiva.
             </p>
+
+            {% if mensagem %}
+                <p class="mensagem">{{ mensagem }}</p>
+            {% endif %}
+
+            {% if erro %}
+                <p class="erro">{{ erro }}</p>
+            {% endif %}
 
             <div id="caixa-formulario">
 
@@ -74,7 +77,6 @@
                         min="0"
                         max="120"
                         placeholder="Ex.: 50"
-                        required
                     >
 
                     <button type="submit">Adicionar</button>
@@ -92,36 +94,35 @@
                     <div>
                         <h3>{{ historico.parente }}</h3>
                         <p><strong>Doença:</strong> {{ historico.doenca }}</p>
-                        <p><strong>Idade no diagnóstico:</strong> {{ historico.idade_diagnostico }} anos</p>
+                        {% if historico.idade_diagnostico is not None %}
+                            <p><strong>Idade no diagnóstico:</strong> {{ historico.idade_diagnostico }} anos</p>
+                        {% endif %}
                     </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="acao" value="excluir">
+                        <input type="hidden" name="historico_id" value="{{ historico.id }}">
+                        <button type="submit" class="botao-remover">Remover</button>
+                    </form>
                 </div>
                 {% empty %}
                 <p>Nenhuma informação registrada ainda.</p>
-                <form method="POST">
-                   {% csrf_token %}
-
-                   <input type="hidden" name="acao" value="excluir">
-                   <input
-                      type="hidden"
-                      name="historico_id"
-                      value="{{ historico.id }}"
-                   >
-
-                   <button type="submit">
-                      Remover
-                   </button>
-                </form>
                 {% endfor %}
 
+            </div>
+
+            <div class="proximo-passo">
+                <a href="{% url 'CheckupInteligente' %}" class="botao-proximo">
+                    Próximo: Check-up Inteligente
+                </a>
             </div>
 
         </section>
 
     </main>
 
-    <footer>
-        <p>MedMap - seu mapa de saúde preventiva</p>
-    </footer>
+    {% include 'includes/Rodape.html' %}
 
 </body>
 </html>

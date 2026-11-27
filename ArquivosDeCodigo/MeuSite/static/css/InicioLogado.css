@@ -190,6 +190,13 @@ main {
     flex: 1;
 }
 
+.proximos-lista {
+    max-height: 430px;
+    overflow-y: auto;
+    padding-right: 6px;
+    margin-bottom: 12px;
+}
+
 .proximo-item {
     background: white;
     border: 1px solid #dcebe4;
@@ -417,4 +424,13 @@ nav {
 .erro-troca {
     color: #b3261e;
     font-size: 13px;
+}
+
+.proximo-item button.botao-apagar {
+    background: transparent;
+    color: #b3261e;
+    border: 1px solid #b3261e;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
 }
