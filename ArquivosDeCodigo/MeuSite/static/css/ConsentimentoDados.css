@@ -45,17 +45,12 @@ button {
     width: 100%;
     border: none;
     border-radius: 5px;
-    background: #0f675b;
+    background: #92b4aa;
     color: white;
     font: inherit;
     font-weight: bold;
-    cursor: pointer;
 }
-button:hover { background: #0b5249; }
-.mensagem, .situacao { padding: 12px 15px; border-radius: 6px; }
-.mensagem { background: #dff3e8; color: #0f675b; font-weight: bold; }
-.situacao.aceito { background: #eef7f3; color: #0f675b; border: 1px solid #cfe5dc; }
-.situacao.pendente { background: #fff6e0; color: #7a5a12; border: 1px solid #f0dfb0; }
+button:disabled { cursor: not-allowed; }
 .aviso { font-size: 14px; color: #55736c; }
 footer { text-align: center; padding: 20px; color: #55736c; }
 @media (max-width: 600px) {
