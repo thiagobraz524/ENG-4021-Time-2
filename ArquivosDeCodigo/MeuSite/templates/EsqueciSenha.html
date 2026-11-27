@@ -23,14 +23,24 @@
            <p>Informe seu e-mail para receber instruções de recuperação da senha.</p>
 
            <div id="caixa">
-                <form>
+                {% if enviado %}
+                    <p class="mensagem">Se esse e-mail estiver cadastrado, você vai receber um link para criar uma nova senha. O link vale por 1 hora.</p>
+                    {% if link_teste %}
+                        <p class="aviso-teste">Modo de desenvolvimento: como o MedMap ainda não envia e-mails de verdade, o link também aparece aqui.<br>
+                        <a href="{{ link_teste }}">Criar nova senha</a></p>
+                    {% endif %}
+                    <p><a href="{% url 'Tela' %}">Voltar para entrar na conta</a></p>
+                {% else %}
+                <form method="post">
+                    {% csrf_token %}
                     <label for="email">E-mail</label>
-                    <input type="email" id="email" placeholder="voce@email.com" required>
+                    <input type="email" id="email" name="email" placeholder="voce@email.com" required>
 
                     <button type="submit">Enviar instruções</button>
 
                     <p><a href="{% url 'Tela' %}">Voltar para entrar na conta</a></p>
                 </form>
+                {% endif %}
             </div>
        </section>
     </main>

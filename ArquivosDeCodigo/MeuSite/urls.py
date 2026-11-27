@@ -44,7 +44,8 @@ urlpatterns = [
         name='EdicaoUsuario'
     ),
     
-    path('EsqueciSenha/', views.EsqueciSenha, name='EsqueciSenha'), 
+    path('EsqueciSenha/', views.EsqueciSenha, name='EsqueciSenha'),
+    path('RedefinirSenha/<str:token>/', views.RedefinirSenha, name='RedefinirSenha'),
     
     path('PreferenciasNotificacoes/', views.PreferenciasNotificacoes, name='PreferenciasNotificacoes'),
     
