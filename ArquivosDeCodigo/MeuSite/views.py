@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.hashers import check_password, make_password
 from datetime import date, timedelta
+from django.utils import timezone
 from django.utils.dateparse import parse_date
-from banco_de_dados.models import Usuario, Perfil, HistoricoFamiliar as HistoricoFamiliarModel, Cuidado, PreferenciaNotificacao
+from banco_de_dados.models import Usuario, Perfil, HistoricoFamiliar as HistoricoFamiliarModel, Cuidado, PreferenciaNotificacao, Consentimento
 
 def home(request):
     '''
@@ -113,9 +114,35 @@ def ConsentimentoDados(request):
         return redirect('Tela')
 
     usuario = get_object_or_404(Usuario, id=usuario_id)
+    consentimento = Consentimento.objects.filter(usuario=usuario).first()
+    mensagem = ''
+
+    if request.method == 'POST':
+        aceitou_uso_dados = request.POST.get('aceitou_uso_dados') == 'sim'
+        aceitou_comunicacoes = request.POST.get('aceitou_comunicacoes') == 'sim'
+
+        if not consentimento:
+            consentimento = Consentimento(usuario=usuario)
+
+        # a data só muda quando a pessoa passa a aceitar; se ela retirar, a data é apagada
+        if aceitou_uso_dados and not consentimento.aceitou_uso_dados:
+            consentimento.data_consentimento = timezone.now()
+        elif not aceitou_uso_dados:
+            consentimento.data_consentimento = None
+
+        consentimento.aceitou_uso_dados = aceitou_uso_dados
+        consentimento.aceitou_comunicacoes = aceitou_comunicacoes
+        consentimento.save()
+
+        if aceitou_uso_dados:
+            mensagem = 'Suas escolhas foram salvas.'
+        else:
+            mensagem = 'Consentimento retirado. Suas escolhas foram salvas.'
 
     return render(request, 'ConsentimentoDados.html', {
-        'usuario': usuario
+        'usuario': usuario,
+        'consentimento': consentimento,
+        'mensagem': mensagem
     })
 
 def CriarConta(request):

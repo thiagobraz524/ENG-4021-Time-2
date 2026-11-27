@@ -93,3 +93,14 @@ class PreferenciaNotificacao(models.Model):
 
     def __str__(self):
         return f"Preferências de {self.usuario.nome}"
+
+
+class Consentimento(models.Model):
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
+    aceitou_uso_dados = models.BooleanField(default=False)
+    aceitou_comunicacoes = models.BooleanField(default=False)
+    data_consentimento = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        situacao = 'aceito' if self.aceitou_uso_dados else 'não aceito'
+        return f"Consentimento de {self.usuario.nome}: {situacao}"
