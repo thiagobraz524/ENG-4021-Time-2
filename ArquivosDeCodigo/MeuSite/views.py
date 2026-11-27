@@ -994,9 +994,18 @@ def RelatorioPreventivo(request):
 def Familiares(request):
 
     usuario_id = request.session.get('usuario_id')
+
+    if not usuario_id:
+        return redirect('Tela')
+
     perfil = Perfil.objects.filter(usuario_id=usuario_id).first()
 
-    familiares = HistoricoFamiliarModel.objects.filter(perfil=perfil)
+    if not perfil:
+        return redirect('PerfilSaude')
+
+    familiares = HistoricoFamiliarModel.objects.filter(
+        perfil=perfil
+    ).order_by('parente', 'doenca')
 
     return render(request, 'Familiares.html', {'familiares': familiares})
 
