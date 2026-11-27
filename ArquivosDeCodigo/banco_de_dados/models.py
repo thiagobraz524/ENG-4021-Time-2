@@ -18,6 +18,14 @@ class Perfil(models.Model):
     nome = models.CharField(max_length=100)
     data_nascimento = models.DateField()
     sexo = models.CharField(max_length=20)
+    fuma = models.BooleanField(default=False)
+    bebe = models.BooleanField(default=False)
+    sedentario = models.BooleanField(default=False)
+    acima_peso = models.BooleanField(default=False)
+    pouca_fruta = models.BooleanField(default=False)
+    dorme_pouco = models.BooleanField(default=False)
+    sol_sem_protetor = models.BooleanField(default=False)
+    sem_dentista = models.BooleanField(default=False)
 
     def __str__(self):
         return self.nome
@@ -47,6 +55,19 @@ class Cuidado(models.Model):
     tipo = models.CharField(max_length=30)
     nome = models.CharField(max_length=150)
     data = models.DateField()
+    concluido = models.BooleanField(default=False)
+    local = models.CharField(max_length=120, blank=True, default='')
+    observacoes = models.TextField(blank=True, default='')
 
     def __str__(self):
         return f"{self.nome} - {self.data}"
+
+
+class AvaliacaoMedMap(models.Model):
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
+    nota = models.PositiveSmallIntegerField()
+    comentario = models.TextField(blank=True, default='')
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Avaliação de {self.usuario.nome}: {self.nota}/5"

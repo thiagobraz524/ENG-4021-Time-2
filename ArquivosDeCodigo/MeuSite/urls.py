@@ -17,9 +17,14 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-from MeuSite import views 
+from MeuSite import views
+from MeuSite import cuidados_actions
+from MeuSite import cuidados_detalhes
+from MeuSite import avaliacao
 
 urlpatterns = [
+    path('Cuidados/<int:cuidado_id>/atualizar/', cuidados_actions.atualizar_cuidado, name='AtualizarCuidado'),
+    path('Cuidados/<int:cuidado_id>/detalhes/', cuidados_detalhes.salvar_detalhes, name='DetalhesCuidado'),
     path("admin/", admin.site.urls),
 
     path('', views.home, name='home'),
@@ -68,4 +73,13 @@ urlpatterns = [
     path('CadastroCuidados/', views.CadastroCuidados, name='CadastroCuidados'),
 
     path('InicioLogado/', views.InicioLogado, name='InicioLogado'),
+
+    path('MinhaConta/', views.MinhaConta, name='MinhaConta'),
+
+    path('TrocarConta/', views.TrocarConta, name='TrocarConta'),
+
+
+    path('Sair/', views.Sair, name='Sair'),
+    path('Avaliacao/', avaliacao.avaliar_medmap, name='AvaliacaoMedMap'),
+
 ]

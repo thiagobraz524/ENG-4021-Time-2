@@ -11,18 +11,21 @@
 <body>
 
     <nav>
-        <h1>MedMap</h1>
-
-        <div class="navegacao">
+        <h2>MedMap</h2>
+        <ul class="navegacao">
             <a href="{% url 'InicioLogado' %}">Início</a>
-            <a href="{% url 'CadastroCuidados' %}">Cadastro Cuidados</a>
-        </div>
+            
+        </ul>
     </nav>
 
     <main>
         <h2>Calendário de cuidados</h2>
         <p>Veja os seus próximos exames, consultas e vacinas.</p>
-
+        <div class="cadastro-principal">
+           <a href="{% url 'CadastroCuidados' %}">
+              + Cadastrar novo cuidado
+           </a>
+        </div>
         <form method="get" class="filtros" action="{% url 'CalendarioCuidados' %}">
             <h3>Filtrar cuidados</h3>
             <div class="campos-filtro">
@@ -62,18 +65,61 @@
         <p class="total-cuidados">{{ total_cuidados }} cuidado(s) encontrado(s).</p>
 
         {% for cuidado in cuidados %}
-        <div class="cuidado">
-            <div>
-                <h3>{{ cuidado.nome }}</h3>
+        <div class="cuidado{% if cuidado.concluido %} concluido{% endif %}">
+            <div class="dados-cuidado">
+                <h3>{% if cuidado.concluido %}✓ {% endif %}{{ cuidado.nome }}</h3>
                 <p>{{ cuidado.tipo }} - {{ cuidado.data|date:"d/m/Y" }}</p>
+                {% if cuidado.local %}
+                <p class="detalhe-info"><strong>Local:</strong> {{ cuidado.local }}</p>
+                {% endif %}
+                {% if cuidado.observacoes %}
+                <p class="detalhe-info"><strong>Observações:</strong> {{ cuidado.observacoes }}</p>
+                {% endif %}
+                <details class="detalhes-cuidado">
+                    <summary>Editar local e observações</summary>
+                    <form method="post" action="{% url 'DetalhesCuidado' cuidado.id %}">
+                        {% csrf_token %}
+                        <label for="local-{{ cuidado.id }}">Local</label>
+                        <input id="local-{{ cuidado.id }}" name="local" type="text"
+                               maxlength="120" value="{{ cuidado.local }}" placeholder="Local da consulta">
+                        <label for="observacoes-{{ cuidado.id }}">Observações</label>
+                        <textarea id="observacoes-{{ cuidado.id }}" name="observacoes"
+                                  maxlength="400" rows="2">{{ cuidado.observacoes }}</textarea>
+                        <button type="submit">Salvar detalhes</button>
+                    </form>
+                </details>
             </div>
-            {% if cuidado.data < hoje %}
-                <span class="atrasado">Data passada</span>
-            {% elif cuidado.data == hoje %}
-                <span class="hoje">Hoje</span>
-            {% else %}
-                <span class="programado">Programado</span>
-            {% endif %}
+            <div class="acoes-cuidado">
+                {% if cuidado.concluido %}
+                    <span class="feito">✓ Feito</span>
+                    <form method="post" action="{% url 'AtualizarCuidado' cuidado.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="acao" value="desfazer">
+                        <button class="botao-secundario" type="submit">Desfazer</button>
+                    </form>
+                {% else %}
+                    {% if cuidado.data < hoje %}
+                        <span class="atrasado">Data passada</span>
+                    {% elif cuidado.data == hoje %}
+                        <span class="hoje">Hoje</span>
+                    {% else %}
+                        <span class="programado">Programado</span>
+                    {% endif %}
+                    <form method="post" action="{% url 'AtualizarCuidado' cuidado.id %}" class="form-conclusao">
+                        {% csrf_token %}
+                        <input type="hidden" name="acao" value="concluir">
+                        <label for="meses-{{ cuidado.id }}">Próximo agendamento (opcional)</label>
+                        <select name="meses" id="meses-{{ cuidado.id }}">
+                            <option value="0">Não reagendar</option>
+                            <option value="1">Em 1 mês</option>
+                            <option value="3">Em 3 meses</option>
+                            <option value="6">Em 6 meses</option>
+                            <option value="12">Em 12 meses</option>
+                        </select>
+                        <button type="submit">✓ Marcar como feito</button>
+                    </form>
+                {% endif %}
+            </div>
         </div>
         {% empty %}
         <p>Nenhum cuidado cadastrado.</p>

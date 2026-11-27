@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -6,22 +10,25 @@ body {
 }
 
 nav{
-    padding:18px 30px;
+    padding: 20px;
     background:#0f675b;
     color:white;
-    display:flex;
+    display: flex;
     justify-content:space-between;
     align-items:center;
 }
 
-nav h2{
-    margin:0;
+nav h2 {
+    margin: 0;
     color:white;
 }
 
 .navegacao{
     display:flex;
     gap:20px;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
 
 .navegacao a{
@@ -129,4 +136,110 @@ footer {
 @media (max-width: 600px) {
     .campos-filtro { grid-template-columns: 1fr; }
     .filtros { padding: 15px; }
+}
+
+/* Conclusão de cuidados - Sprint 9 */
+.cuidado.concluido {
+    background: #e5f6ee;
+    border-color: #75b99b;
+}
+.cuidado.concluido .dados-cuidado h3 {
+    text-decoration: line-through;
+    color: #4d7767;
+}
+.acoes-cuidado {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    margin-left: 15px;
+}
+.feito {
+    background: #c9ebd8;
+    color: #12603d;
+    border-radius: 5px;
+    padding: 6px 12px;
+    font-weight: bold;
+}
+.form-conclusao {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-end;
+    font-size: 13px;
+}
+.form-conclusao select {
+    padding: 6px;
+    border-radius: 5px;
+    border: 1px solid #a9c5b9;
+    max-width: 190px;
+}
+.form-conclusao button, .botao-secundario {
+    border: 0;
+    border-radius: 5px;
+    padding: 8px 10px;
+    cursor: pointer;
+    background: #0f675b;
+    color: white;
+}
+.botao-secundario { background: #6e807a; }
+@media (max-width: 600px) {
+    .cuidado { align-items: flex-start; flex-direction: column; gap: 12px; }
+    .acoes-cuidado, .form-conclusao { margin-left: 0; align-items: flex-start; }
+}
+.cadastro-principal {
+    display: flex;
+    justify-content: center;
+    margin: 25px 0;
+}
+
+.cadastro-principal a {
+    display: inline-block;
+    padding: 14px 25px;
+    background: #0f675b;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.cadastro-principal a:hover {
+    background: #0b5048;
+    transform: translateY(-3px);
+}
+/* Sprint 10: informações adicionais de cada cuidado */
+.detalhe-info {
+    font-size: 14px;
+    color: #3d665c;
+    overflow-wrap: anywhere;
+}
+.detalhes-cuidado { margin-top: 10px; font-size: 13px; }
+.detalhes-cuidado summary {
+    color: #0f675b;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.detalhes-cuidado form {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-top: 10px;
+    max-width: 250px;
+}
+.detalhes-cuidado input, .detalhes-cuidado textarea {
+    box-sizing: border-box;
+    font: inherit;
+    padding: 7px;
+    width: 100%;
+    border: 1px solid #bfd1c9;
+    border-radius: 4px;
+}
+.detalhes-cuidado button {
+    background: #0f675b;
+    color: #fff;
+    border: 0;
+    border-radius: 5px;
+    padding: 9px;
+    cursor: pointer;
 }

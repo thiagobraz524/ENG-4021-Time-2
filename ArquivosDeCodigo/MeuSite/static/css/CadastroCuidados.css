@@ -5,8 +5,9 @@ body {
     background: #f7fbf8;
     color: #173d37;
 }
-nav{
-    padding:18px 30px;
+
+nav {
+    padding:20px;
     background:#0f675b;
     color:white;
     display:flex;
@@ -14,14 +15,17 @@ nav{
     align-items:center;
 }
 
-nav h2{
+nav h2 {
     margin:0;
-    color:white;
+    color: white;
 }
 
-.navegacao{
+.navegacao {
     display:flex;
     gap:20px;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
 
 .navegacao a{
