@@ -54,12 +54,16 @@ button {
     width: 100%;
     border: none;
     border-radius: 5px;
-    background: #92b4aa;
+    background: #0f675b;
     color: white;
     font: inherit;
     font-weight: bold;
+    cursor: pointer;
 }
-button:disabled { cursor: not-allowed; }
+button:hover { background: #0b5249; }
+.mensagem, .erro { padding: 12px 15px; border-radius: 6px; font-weight: bold; }
+.mensagem { background: #dff3e8; color: #0f675b; }
+.erro { background: #fde8e5; color: #8b2f25; }
 .aviso { font-size: 14px; color: #55736c; }
 footer { text-align: center; padding: 20px; color: #55736c; }
 @media (max-width: 600px) {

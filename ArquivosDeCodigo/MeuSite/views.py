@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.hashers import check_password, make_password
 from datetime import date, timedelta
 from django.utils.dateparse import parse_date
-from banco_de_dados.models import Usuario, Perfil, HistoricoFamiliar as HistoricoFamiliarModel, Cuidado
+from banco_de_dados.models import Usuario, Perfil, HistoricoFamiliar as HistoricoFamiliarModel, Cuidado, PreferenciaNotificacao
 
 def home(request):
     '''
@@ -236,9 +236,49 @@ def PreferenciasNotificacoes(request):
         return redirect('Tela')
 
     usuario = get_object_or_404(Usuario, id=usuario_id)
+    preferencia = PreferenciaNotificacao.objects.filter(usuario=usuario).first()
+    mensagem = ''
+    erro = ''
+
+    if request.method == 'POST':
+        email_contato = request.POST.get('email_contato', '').strip().lower()
+        antecedencia_texto = request.POST.get('antecedencia', '')
+        antecedencias_validas = [
+            opcao[0] for opcao in PreferenciaNotificacao.ANTECEDENCIAS
+        ]
+
+        try:
+            antecedencia = int(antecedencia_texto)
+        except ValueError:
+            antecedencia = None
+
+        if antecedencia not in antecedencias_validas:
+            erro = 'Escolha quando gostaria de ser avisado.'
+        elif email_contato and '@' not in email_contato:
+            erro = 'Informe um e-mail de contato válido.'
+        else:
+            preferencia, _ = PreferenciaNotificacao.objects.update_or_create(
+                usuario=usuario,
+                defaults={
+                    'lembrar_consultas': request.POST.get('lembrar_consultas') == 'sim',
+                    'lembrar_exames': request.POST.get('lembrar_exames') == 'sim',
+                    'lembrar_vacinas': request.POST.get('lembrar_vacinas') == 'sim',
+                    'antecedencia_dias': antecedencia,
+                    'email_contato': email_contato,
+                }
+            )
+            mensagem = 'Preferências salvas com sucesso.'
+
+    if not preferencia:
+        # ainda não salvou: mostra os valores padrão do model
+        preferencia = PreferenciaNotificacao(usuario=usuario)
 
     return render(request, 'PreferenciasNotificacoes.html', {
-        'usuario': usuario
+        'usuario': usuario,
+        'preferencia': preferencia,
+        'antecedencias': PreferenciaNotificacao.ANTECEDENCIAS,
+        'mensagem': mensagem,
+        'erro': erro
     })
 
 

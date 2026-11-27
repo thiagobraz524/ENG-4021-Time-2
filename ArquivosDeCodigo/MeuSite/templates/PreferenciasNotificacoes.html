@@ -19,33 +19,39 @@
     <main>
         <h1>Preferências de notificações</h1>
         <p>Escolha os avisos que gostaria de receber sobre seus cuidados.</p>
+        {% if mensagem %}<p class="mensagem">{{ mensagem }}</p>{% endif %}
+        {% if erro %}<p class="erro">{{ erro }}</p>{% endif %}
         <section class="caixa">
             <h2>Tipos de lembretes</h2>
-            <form>
+            <form method="post">
+                {% csrf_token %}
                 <label class="opcao">
-                    <input type="checkbox" checked>
+                    <input type="checkbox" name="lembrar_consultas" value="sim" {% if preferencia.lembrar_consultas %}checked{% endif %}>
                     <span>Consultas agendadas</span>
                 </label>
                 <label class="opcao">
-                    <input type="checkbox" checked>
+                    <input type="checkbox" name="lembrar_exames" value="sim" {% if preferencia.lembrar_exames %}checked{% endif %}>
                     <span>Exames e acompanhamentos</span>
                 </label>
                 <label class="opcao">
-                    <input type="checkbox">
+                    <input type="checkbox" name="lembrar_vacinas" value="sim" {% if preferencia.lembrar_vacinas %}checked{% endif %}>
                     <span>Vacinas e doses futuras</span>
                 </label>
                 <label for="antecedencia">Quando gostaria de ser avisado?</label>
-                <select id="antecedencia">
-                    <option>1 dia antes</option>
-                    <option>3 dias antes</option>
-                    <option>7 dias antes</option>
+                <select id="antecedencia" name="antecedencia">
+                    {% for valor, texto in antecedencias %}
+                        <option value="{{ valor }}" {% if valor == preferencia.antecedencia_dias %}selected{% endif %}>{{ texto }}</option>
+                    {% endfor %}
                 </select>
                 <label for="email">E-mail de contato</label>
-                <input id="email" type="email" placeholder="voce@email.com">
-                <button type="button" disabled>Salvar preferências (em breve)</button>
+                <input id="email" name="email_contato" type="email" placeholder="{{ usuario.email }}" value="{{ preferencia.email_contato }}">
+                <button type="submit">Salvar preferências</button>
             </form>
         </section>
-        <p class="aviso">Tela demonstrativa: as preferências não são salvas e nenhum aviso é enviado por e-mail.</p>
+        {% if preferencia.pk %}
+            <p class="aviso">Última atualização: {{ preferencia.atualizado_em|date:"d/m/Y \à\s H:i" }}.</p>
+        {% endif %}
+        <p class="aviso">Suas preferências ficam salvas na sua conta. Se o e-mail de contato ficar vazio, usaremos o e-mail da conta. O envio dos lembretes por e-mail ainda não está ativo.</p>
         <p><a href="{% url 'MinhaConta' %}">Voltar para Minha conta</a></p>
     </main>
     <footer>MedMap - seu mapa de saúde preventiva</footer>
