@@ -71,3 +71,36 @@ class AvaliacaoMedMap(models.Model):
 
     def __str__(self):
         return f"Avaliação de {self.usuario.nome}: {self.nota}/5"
+
+
+class PreferenciaNotificacao(models.Model):
+    ANTECEDENCIAS = (
+        (1, '1 dia antes'),
+        (3, '3 dias antes'),
+        (7, '7 dias antes'),
+    )
+
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
+    lembrar_consultas = models.BooleanField(default=True)
+    lembrar_exames = models.BooleanField(default=True)
+    lembrar_vacinas = models.BooleanField(default=False)
+    antecedencia_dias = models.PositiveSmallIntegerField(
+        choices=ANTECEDENCIAS,
+        default=3
+    )
+    email_contato = models.EmailField(blank=True, default='')
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Preferências de {self.usuario.nome}"
+
+
+class Consentimento(models.Model):
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
+    aceitou_uso_dados = models.BooleanField(default=False)
+    aceitou_comunicacoes = models.BooleanField(default=False)
+    data_consentimento = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        situacao = 'aceito' if self.aceitou_uso_dados else 'não aceito'
+        return f"Consentimento de {self.usuario.nome}: {situacao}"

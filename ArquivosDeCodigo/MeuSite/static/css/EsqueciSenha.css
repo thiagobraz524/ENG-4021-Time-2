@@ -72,6 +72,31 @@ button {
     border: none;
 }
 
+button { cursor: pointer; }
+
+.mensagem {
+    background-color: #dff3e8;
+    padding: 12px;
+    border-radius: 5px;
+    line-height: 1.4;
+}
+
+.aviso-teste {
+    background-color: #fff6e0;
+    color: #7a5a12;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.erro {
+    background-color: #fde8e5;
+    color: #8b2f25;
+    padding: 12px;
+    border-radius: 5px;
+}
+
 #caixa a {
     color: #0f675b;
 }
