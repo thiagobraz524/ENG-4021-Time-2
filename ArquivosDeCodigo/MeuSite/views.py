@@ -1,13 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.hashers import check_password, make_password
 from datetime import date, timedelta
-from django.conf import settings
-from django.core import signing
-from django.core.mail import send_mail
-from django.urls import reverse
-from django.utils import timezone
 from django.utils.dateparse import parse_date
-from banco_de_dados.models import Usuario, Perfil, HistoricoFamiliar as HistoricoFamiliarModel, Cuidado, PreferenciaNotificacao, Consentimento
+from banco_de_dados.models import Usuario, Perfil, HistoricoFamiliar as HistoricoFamiliarModel, Cuidado
 
 def home(request):
     '''
@@ -89,95 +84,10 @@ def ComoUsar(request):
     return render(request, 'ComoUsar.html')
 
 
-SALT_REDEFINIR_SENHA = 'medmap-redefinir-senha'
-VALIDADE_LINK_SENHA = 60 * 60  # o link vale por 1 hora
+def EsqueciSenha (request):
 
 
-def gerar_token_senha(usuario):
-    # o final do hash da senha entra no token: quando a senha muda, o link antigo deixa de valer
-    return signing.dumps(
-        {'id': usuario.id, 'senha': usuario.senha[-12:]},
-        salt=SALT_REDEFINIR_SENHA
-    )
-
-
-def usuario_do_token(token):
-    try:
-        dados = signing.loads(
-            token,
-            salt=SALT_REDEFINIR_SENHA,
-            max_age=VALIDADE_LINK_SENHA
-        )
-    except signing.BadSignature:
-        # BadSignature também cobre o link expirado (SignatureExpired)
-        return None
-
-    usuario = Usuario.objects.filter(id=dados.get('id')).first()
-
-    if not usuario or usuario.senha[-12:] != dados.get('senha'):
-        return None
-
-    return usuario
-
-
-def EsqueciSenha(request):
-    enviado = False
-    link_teste = ''
-
-    if request.method == 'POST':
-        email = request.POST.get('email', '').strip().lower()
-        usuario = Usuario.objects.filter(email=email).first()
-
-        if usuario:
-            link = request.build_absolute_uri(
-                reverse('RedefinirSenha', args=[gerar_token_senha(usuario)])
-            )
-            send_mail(
-                'MedMap - Redefinir sua senha',
-                f'Olá, {usuario.nome}!\n\n'
-                f'Para criar uma nova senha, acesse o link abaixo:\n{link}\n\n'
-                'O link vale por 1 hora. Se você não pediu para trocar a senha, ignore este e-mail.',
-                'nao-responda@medmap.com',
-                [usuario.email]
-            )
-
-            # o MedMap ainda não tem servidor de e-mail: em desenvolvimento
-            # o link também aparece na tela, para dar para testar
-            if settings.DEBUG:
-                link_teste = link
-
-        # a mesma mensagem aparece mesmo se o e-mail não existir,
-        # para ninguém descobrir quais e-mails têm conta no MedMap
-        enviado = True
-
-    return render(request, 'EsqueciSenha.html', {
-        'enviado': enviado,
-        'link_teste': link_teste
-    })
-
-
-def RedefinirSenha(request, token):
-    usuario = usuario_do_token(token)
-
-    if not usuario:
-        return render(request, 'RedefinirSenha.html', {'link_invalido': True})
-
-    erro = ''
-
-    if request.method == 'POST':
-        senha = request.POST.get('senha', '')
-        confirmar_senha = request.POST.get('confirmar_senha', '')
-
-        if len(senha) < 6:
-            erro = 'A senha deve ter pelo menos 6 caracteres.'
-        elif senha != confirmar_senha:
-            erro = 'As senhas não coincidem.'
-        else:
-            usuario.senha = make_password(senha)
-            usuario.save()
-            return render(request, 'RedefinirSenha.html', {'senha_trocada': True})
-
-    return render(request, 'RedefinirSenha.html', {'erro': erro})
+    return render(request, 'EsqueciSenha.html')
 
 def MinhaConta(request):
     usuario_id = request.session.get('usuario_id')
@@ -203,35 +113,9 @@ def ConsentimentoDados(request):
         return redirect('Tela')
 
     usuario = get_object_or_404(Usuario, id=usuario_id)
-    consentimento = Consentimento.objects.filter(usuario=usuario).first()
-    mensagem = ''
-
-    if request.method == 'POST':
-        aceitou_uso_dados = request.POST.get('aceitou_uso_dados') == 'sim'
-        aceitou_comunicacoes = request.POST.get('aceitou_comunicacoes') == 'sim'
-
-        if not consentimento:
-            consentimento = Consentimento(usuario=usuario)
-
-        # a data só muda quando a pessoa passa a aceitar; se ela retirar, a data é apagada
-        if aceitou_uso_dados and not consentimento.aceitou_uso_dados:
-            consentimento.data_consentimento = timezone.now()
-        elif not aceitou_uso_dados:
-            consentimento.data_consentimento = None
-
-        consentimento.aceitou_uso_dados = aceitou_uso_dados
-        consentimento.aceitou_comunicacoes = aceitou_comunicacoes
-        consentimento.save()
-
-        if aceitou_uso_dados:
-            mensagem = 'Suas escolhas foram salvas.'
-        else:
-            mensagem = 'Consentimento retirado. Suas escolhas foram salvas.'
 
     return render(request, 'ConsentimentoDados.html', {
-        'usuario': usuario,
-        'consentimento': consentimento,
-        'mensagem': mensagem
+        'usuario': usuario
     })
 
 def CriarConta(request):
@@ -352,49 +236,9 @@ def PreferenciasNotificacoes(request):
         return redirect('Tela')
 
     usuario = get_object_or_404(Usuario, id=usuario_id)
-    preferencia = PreferenciaNotificacao.objects.filter(usuario=usuario).first()
-    mensagem = ''
-    erro = ''
-
-    if request.method == 'POST':
-        email_contato = request.POST.get('email_contato', '').strip().lower()
-        antecedencia_texto = request.POST.get('antecedencia', '')
-        antecedencias_validas = [
-            opcao[0] for opcao in PreferenciaNotificacao.ANTECEDENCIAS
-        ]
-
-        try:
-            antecedencia = int(antecedencia_texto)
-        except ValueError:
-            antecedencia = None
-
-        if antecedencia not in antecedencias_validas:
-            erro = 'Escolha quando gostaria de ser avisado.'
-        elif email_contato and '@' not in email_contato:
-            erro = 'Informe um e-mail de contato válido.'
-        else:
-            preferencia, _ = PreferenciaNotificacao.objects.update_or_create(
-                usuario=usuario,
-                defaults={
-                    'lembrar_consultas': request.POST.get('lembrar_consultas') == 'sim',
-                    'lembrar_exames': request.POST.get('lembrar_exames') == 'sim',
-                    'lembrar_vacinas': request.POST.get('lembrar_vacinas') == 'sim',
-                    'antecedencia_dias': antecedencia,
-                    'email_contato': email_contato,
-                }
-            )
-            mensagem = 'Preferências salvas com sucesso.'
-
-    if not preferencia:
-        # ainda não salvou: mostra os valores padrão do model
-        preferencia = PreferenciaNotificacao(usuario=usuario)
 
     return render(request, 'PreferenciasNotificacoes.html', {
-        'usuario': usuario,
-        'preferencia': preferencia,
-        'antecedencias': PreferenciaNotificacao.ANTECEDENCIAS,
-        'mensagem': mensagem,
-        'erro': erro
+        'usuario': usuario
     })
 
 
@@ -1027,18 +871,9 @@ def RelatorioPreventivo(request):
 def Familiares(request):
 
     usuario_id = request.session.get('usuario_id')
-
-    if not usuario_id:
-        return redirect('Tela')
-
     perfil = Perfil.objects.filter(usuario_id=usuario_id).first()
 
-    if not perfil:
-        return redirect('PerfilSaude')
-
-    familiares = HistoricoFamiliarModel.objects.filter(
-        perfil=perfil
-    ).order_by('parente', 'doenca')
+    familiares = HistoricoFamiliarModel.objects.filter(perfil=perfil)
 
     return render(request, 'Familiares.html', {'familiares': familiares})
 

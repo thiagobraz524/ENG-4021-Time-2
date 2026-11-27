@@ -42,11 +42,7 @@
 
                     <p>
                         <strong>Idade do diagnóstico:</strong>
-                        {% if familiar.idade_diagnostico is not None %}
-                            {{ familiar.idade_diagnostico }} anos
-                        {% else %}
-                            Não informada
-                        {% endif %}
+                        {{ familiar.idade_diagnostico }} anos
                     </p>
                 </div>
             {% empty %}
